@@ -1,0 +1,16 @@
+[user]
+    name = ajmacias
+    email = ajmacias@gmail.com
+
+[color]
+    interactive = true
+    status = true
+    branch = true
+    diff = true
+
+[alias]
+    st = status
+    ci = commit
+    ca = commit
+    show-version = !sh -c 'git rev-list HEAD | wc -l'
+    show-rev-number = !sh -c 'git rev-list --reverse HEAD | nl | awk \"{ if(\\$1 == "$0") { print \\$2 }}\"'
