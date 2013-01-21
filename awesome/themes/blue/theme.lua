@@ -90,7 +90,7 @@ theme.mouse_finder_color = "#6b8ba3"
 -- menu_[border_color|border_width]
 -- theme.menu_border_width = "1"
 -- theme.menu_border_color = "#afa72e"
-theme.menu_height = "8"
+theme.menu_height = "15"
 theme.menu_width  = "105"
 theme.menu_border_width  = "0"
 theme.menu_fg_normal = "#ecedee"   --color txt pip
