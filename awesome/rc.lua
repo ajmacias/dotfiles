@@ -112,46 +112,21 @@ menubar.utils.terminal = terminal -- Set the terminal for applications that requ
 -- }}}
 
 -- {{{ Wibox
--- Create a textclock widget
+-- {{{ Create a textclock widget
 clockicon = wibox.widget.imagebox()
 clockicon:set_image(beautiful.widget_clock)
 mytextclock = awful.widget.textclock()
+-- }}}
 
--- System
+-- {{{ System
 sysicon = wibox.widget.imagebox()
 sysicon:set_image(beautiful.widget_sys)
 
 syswidget = wibox.widget.textbox()
 vicious.register( syswidget, vicious.widgets.os, "$2")
+-- }}}
 
--- Uptime
-uptimeicon = wibox.widget.imagebox()
-uptimeicon:set_image(beautiful.widget_uptime)
-
-uptimewidget = wibox.widget.textbox()
-vicious.register( uptimewidget, vicious.widgets.uptime, "$1d $2.$3'")
-
-uptimeicon:buttons(awful.util.table.join(
-					 awful.button({ }, 1, function () exitmenu:toggle() end )
-				   ))
-
-uptimewidget:buttons(awful.util.table.join(
-					 awful.button({ }, 1, function () exitmenu:toggle() end )
-				   ))
-
--- Temp Icon
-tempicon = wibox.widget.imagebox()
-tempicon:set_image(beautiful.widget_temp)
-
--- Temp Widget
-tempwidget = wibox.widget.textbox()
-vicious.register(tempwidget, vicious.widgets.thermal, "$1°C", 9, "thermal_zone0")
-
-tempicon:buttons(awful.util.table.join(
-    awful.button({ }, 1, function () awful.util.spawn("urxvtc -e sudo powertop", false) end)
-))
-
--- GMail widget and tooltip
+-- {{{ GMail widget and tooltip
 mygmail = wibox.widget.textbox()
 gmail_t = awful.tooltip({ objects = { mygmail },})
 
@@ -163,13 +138,15 @@ vicious.register(mygmail, vicious.widgets.gmail,
                     gmail_t:set_text(args["{subject}"])
                     gmail_t:add_to_object(mygmailimg)
                     return args["{count}"]
-                 end, 120) 
-                 --the '120' here means check every 2 minutes.
+                 end, 300) 
+                 --the '300' here means check every 5 minutes.
 
 mygmailimg:buttons(awful.util.table.join(
     awful.button({ }, 1, function () awful.util.spawn("thunderbird", false) end)
 ))
+-- }}}
 
+-- {{{ Archlinux Updates
 -- Pacman Icon
 pacicon = wibox.widget.imagebox()
 pacicon:set_image(beautiful.widget_pac)
@@ -179,7 +156,7 @@ pacwidget_t = awful.tooltip({ objects = { pacwidget},})
 vicious.register(pacwidget, vicious.widgets.pkg,
                 function(widget,args)
                     local io = { popen = io.popen }
-                    local s = io.popen("pacman -Qu --dbpath /home/madhatter/pacman")
+                    local s = io.popen("pacman -Sup")
                     local str = ''
                     for line in s:lines() do
                         str = str .. line .. "\n"
@@ -187,202 +164,28 @@ vicious.register(pacwidget, vicious.widgets.pkg,
                     pacwidget_t:set_text(str)
                     s:close()
                     return " " .. args[1]
-                end, 10, "Arch")
+                end, 1800, "Arch")
                 --'1800' means check every 30 minutes
 
 pacicon:buttons(awful.util.table.join(
-    awful.button({ }, 1, function () awful.util.spawn("urxvtc -e yaourt -Syua", false) end)
+    awful.button({ }, 1, function () awful.util.spawn("urxvt -e yaourt -Syua", false) end)
 ))
+-- }}}
 
--- CPU Icon
-cpuicon = wibox.widget.imagebox()
-cpuicon:set_image(beautiful.widget_cpu)
-
--- CPU Widget
-cpubar = awful.widget.progressbar()
-cpubar:set_width(50)
-cpubar:set_height(6)
-cpubar:set_vertical(false)
-cpubar:set_background_color("#434343")
---cpubar:set_gradient_colors({ beautiful.fg_normal, beautiful.fg_normal, beautiful.fg_normal, beautiful.bar })
---local stats_grad = { type = "linear", from = { 0, 0 }, to = { 100, 0 }, stops = { { 0, "#0000ff" }, { 0.5, "#00ff00" }, { 1, "#ff0000" }}}
-local stats_grad = { type = "linear", from = { 0, 0 }, to = { 50, 0 }, stops = { { 0, beautiful.fg_normal }, { 0.5, beautiful.fg_normal }, { 1, beautiful.fg_normal }}}
-cpubar:set_color(stats_grad)
-vicious.register(cpubar, vicious.widgets.cpu, "$1", 3)
-cpubar_with_margin = wibox.layout.margin()
-cpubar_with_margin:set_widget(cpubar)
-cpubar_with_margin:set_top(5)
-cpubar_with_margin:set_bottom(5)
-
--- Cpu usage
-cpuwidget = wibox.widget.textbox()
-vicious.register( cpuwidget, vicious.widgets.cpu, "$2% $3%", 3)
-
-cpuicon:buttons(awful.util.table.join(
-    awful.button({ }, 1, function () awful.util.spawn("urxvtc -e htop", false) end)
-))
-
--- BATT Icon
-baticon = wibox.widget.imagebox()
-baticon:set_image(beautiful.widget_batt)
-
--- Battery usage
-powermenu = awful.menu({items = {
-			     { "Auto" , function () awful.util.spawn("sudo cpufreq-set -r -g ondemand", false) end },
-			     { "Ondemand" , function () awful.util.spawn("sudo cpufreq-set -r -g ondemand", false) end },
-			     { "Powersave" , function () awful.util.spawn("sudo cpufreq-set -r -g powersave", false) end },
-			     { "Performance" , function () awful.util.spawn("sudo cpufreq-set -r -g performance", false) end }
-			  }
-		       })
-
--- Initialize BATT widget progressbar
-batbar = awful.widget.progressbar()
-batbar:set_width(50)
-batbar:set_height(6)
-batbar:set_vertical(false)
-batbar:set_background_color("#434343")
-batbar:set_border_color(nil)
---batbar:set_gradient_colors({ beautiful.fg_normal, beautiful.fg_normal, beautiful.fg_normal, beautiful.bar })
-batbar:set_color(stats_grad)
-batbar_with_margin = wibox.layout.margin()
-batbar_with_margin:set_widget(batbar)
-batbar_with_margin:set_top(5)
-batbar_with_margin:set_bottom(5)
-vicious.register( batbar, vicious.widgets.bat, "$2", 1, "BAT0" )
-
-batwidget = wibox.widget.textbox()
-vicious.register( batwidget, vicious.widgets.bat, "$2", 1, "BAT0" )
-baticon:buttons(awful.util.table.join(
-					 awful.button({ }, 1, function () powermenu:toggle() end )
-				   ))
-
-batwidget:buttons(awful.util.table.join(
-					 awful.button({ }, 1, function () powermenu:toggle() end )
-				   ))
+-- {{{ Volumen
+-- Vol cache
+vicious.cache(vicious.widgets.volume)
 
 -- Vol Icon
 volicon = wibox.widget.imagebox()
 volicon:set_image(beautiful.widget_vol)
--- Vol bar Widget
-volbar = awful.widget.progressbar()
-volbar:set_width(50)
-volbar:set_height(6)
-volbar:set_vertical(false)
-volbar:set_background_color("#434343")
-volbar:set_border_color(nil)
---volbar:set_gradient_colors({ beautiful.fg_normal, beautiful.fg_normal, beautiful.fg_normal, beautiful.bar })
-local volume_grad = { type = "linear", from = { 0, 0 }, to = { 100, 0 }, stops = { { 0, beautiful.fg_normal }, { 0.5, beautiful.fg_normal }, { 1, beautiful.fg_normal }}}
-volbar:set_color(volume_grad)
-volbar_with_margin = wibox.layout.margin()
-volbar_with_margin:set_widget(volbar)
-volbar_with_margin:set_top(5)
-volbar_with_margin:set_bottom(5)
-vicious.register(volbar, vicious.widgets.volume,  "$1",  1, "Master")
 
 -- Sound volume
 volumewidget = wibox.widget.textbox()
-vicious.register( volumewidget, vicious.widgets.volume, "$1", 1, "Master" )
+vicious.register( volumewidget, vicious.widgets.volume, "$1%", 2, "Master" )
+-- }}}
 
-volicon:buttons(awful.util.table.join(
-    awful.button({ }, 1, function () awful.util.spawn("amixer -q sset Master toggle", false) end),
-    awful.button({ }, 3, function () awful.util.spawn("urxvtc -e alsamixer", true) end),
-    awful.button({ }, 4, function () awful.util.spawn("amixer -q sset Master 1dB+", false) end),
-    awful.button({ }, 5, function () awful.util.spawn("amixer -q sset Master 1dB-", false) end)
-))
-
-volumewidget:buttons(awful.util.table.join(
-    awful.button({ }, 1, function () awful.util.spawn("amixer -q sset Master toggle", false) end),
-    awful.button({ }, 3, function () awful.util.spawn("urxvtc -e alsamixer", true) end),
-    awful.button({ }, 4, function () awful.util.spawn("amixer -q sset Master 1dB+", false) end),
-    awful.button({ }, 5, function () awful.util.spawn("amixer -q sset Master 1dB-", false) end)
-))
-
--- Net Widget
-netdownicon = wibox.widget.imagebox()
-netdownicon:set_image(beautiful.widget_netdown)
-
-netdowninfo = wibox.widget.textbox()
-vicious.register(netdowninfo, vicious.widgets.net, "${eth0 down_kb}", 1)
-
-netupicon = wibox.widget.imagebox()
-netupicon:set_image(beautiful.widget_netup)
-
-netupinfo = wibox.widget.textbox()
-vicious.register(netupinfo, vicious.widgets.net, "${eth0 up_kb}", 1)
-
-netmenu = awful.menu({items = {
-			     { "Change ip" , function () awful.util.spawn("sh ./.scripts/restartwifi", false) end },
-			     { "Connect Lan" , function () awful.util.spawn("urxvtc -hold -e sudo netcfg home-ethernet", false) end },
-			     { "Connect Wifi" , function () awful.util.spawn("urxvtc -hold -e sudo netcfg home-wireless-wpa", false) end },
-			     { "Disconnect Lan" , function () awful.util.spawn("urxvtc -hold -e sudo netcfg down home-ethernet", false) end },
-			     { "Disconnect Wifi" , function () awful.util.spawn("urxvtc -hold -e sudo netcfg down home-wireless-wpa", false) end }
-			  }
-		       })
-
-netdownicon:buttons(awful.util.table.join(
-					 awful.button({ }, 1, function () netmenu:toggle() end )
-				   ))
-netdowninfo:buttons(awful.util.table.join(
-					 awful.button({ }, 1, function () netmenu:toggle() end )
-				   ))
-netupicon:buttons(awful.util.table.join(
-					 awful.button({ }, 1, function () netmenu:toggle() end )
-				   ))
-netupinfo:buttons(awful.util.table.join(
-					 awful.button({ }, 1, function () netmenu:toggle() end )
-				   ))
-
--- MEM icon
-memicon = wibox.widget.imagebox()
-memicon:set_image(beautiful.widget_mem)
--- Initialize MEMBar widget
-membar = awful.widget.progressbar()
-membar:set_width(50)
-membar:set_height(6)
-membar:set_vertical(false)
-membar:set_background_color("#434343")
-membar:set_border_color(nil)
---membar:set_gradient_colors({ beautiful.fg_normal, beautiful.fg_normal, beautiful.fg_normal, beautiful.bar })
-local memory_grad = { type = "linear", from = { 0, 0 }, to = { 100, 0 }, stops = { { 0, beautiful.fg_normal }, { 0.5, beautiful.fg_normal }, { 1, beautiful.fg_normal }}}
-membar:set_color(memory_grad)
-membar_with_margin = wibox.layout.margin()
-membar_with_margin:set_widget(membar)
-membar_with_margin:set_top(5)
-membar_with_margin:set_bottom(5)
-vicious.register(membar, vicious.widgets.mem, "$1", 1)
-
--- Memory usage
-memwidget = wibox.widget.textbox()
-vicious.register(memwidget, vicious.widgets.mem, "$2M", 1)
-
-memicon:buttons(awful.util.table.join(
-    awful.button({ }, 1, function () awful.util.spawn("urxvtc -e saidar -c", false) end)
-))
-
-
--- MPD Icon
-mpdicon = wibox.widget.imagebox()
-mpdicon:set_image(beautiful.widget_mpd)
--- Initialize MPD Widget
-mpdwidget = wibox.widget.textbox()
-vicious.register(mpdwidget, vicious.widgets.mpd,
-    function (widget, args)
-        if args["{state}"] == "Stop" then 
-            return "Stopped"
-        elseif args["{state}"] == "Pause" then
-            return "Paused"
-        else 
-            return args["{Title}"]..' - '.. args["{Artist}"]
-        end
-    end, 0.5)
-
-mpdicon:buttons(awful.util.table.join(
-    awful.button({ }, 1, function () awful.util.spawn("urxvtc -e ncmpcpp", false) end)
-))
-
-
-
--- Spacers
+-- {{{ Spacers
 rbracket = wibox.widget.textbox()
 rbracket:set_text("]")
 lbracket = wibox.widget.textbox()
@@ -394,6 +197,7 @@ line:set_text("|")
 space = wibox.widget.textbox()
 space:set_text(" ")
 
+-- }}}
 
 
 -- Create a wibox for each screen and add it
@@ -478,10 +282,19 @@ for s = 1, screen.count() do
     if s == 1 then 
         upper_right_layout:add(wibox.widget.systray())
 	    upper_right_layout:add(space)
-	    upper_right_layout:add(sysicon)
-	    upper_right_layout:add(syswidget)
     end
 	upper_right_layout:add(space)
+
+    upper_right_layout:add(pacicon)
+    upper_right_layout:add(pacwidget)
+        upper_right_layout:add(space)
+ 
+    upper_right_layout:add(mygmailimg)
+    upper_right_layout:add(mygmail) 
+	    upper_right_layout:add(space)
+    upper_right_layout:add(volicon)
+    upper_right_layout:add(volumewidget)
+	    upper_right_layout:add(space)
 	upper_right_layout:add(clockicon)
     upper_right_layout:add(mytextclock)
     upper_right_layout:add(mylayoutbox[s])
@@ -493,105 +306,6 @@ for s = 1, screen.count() do
     upper_layout:set_right(upper_right_layout)
 
     mywibox[s]:set_widget(upper_layout)
-
-    if s == 1 then
-        -- The bottom wibox layout
-        mybottomwibox[s] = awful.wibox({ position = "bottom", screen = s, border_width = 0, height = 16 })
-
-        -- Widgets that are aligned to the left
-        local bottom_left_layout = wibox.layout.fixed.horizontal()
-        bottom_left_layout:add(lbracket)
-        bottom_left_layout:add(volicon)
-        bottom_left_layout:add(space)
-        bottom_left_layout:add(volbar_with_margin)
-        bottom_left_layout:add(space)
-        bottom_left_layout:add(space)
-        bottom_left_layout:add(volumewidget)
-        bottom_left_layout:add(space)
-        bottom_left_layout:add(rbracket)
-        bottom_left_layout:add(space)
-        bottom_left_layout:add(lbracket)
-        bottom_left_layout:add(baticon)
-        bottom_left_layout:add(space)
-        bottom_left_layout:add(batbar_with_margin)
-        bottom_left_layout:add(space)
-        bottom_left_layout:add(space)
-        bottom_left_layout:add(batwidget)
-        bottom_left_layout:add(space)
-        bottom_left_layout:add(rbracket)
-        bottom_left_layout:add(space)
-        bottom_left_layout:add(lbracket)
-        bottom_left_layout:add(cpuicon)
-        bottom_left_layout:add(space)
-        bottom_left_layout:add(cpubar_with_margin)
-        bottom_left_layout:add(space)
-        bottom_left_layout:add(space)
-        bottom_left_layout:add(cpuwidget)
-        bottom_left_layout:add(space)
-        bottom_left_layout:add(rbracket)
-        bottom_left_layout:add(space)
-        bottom_left_layout:add(lbracket)
-        bottom_left_layout:add(memicon)
-        bottom_left_layout:add(space)
-        bottom_left_layout:add(membar_with_margin)
-        bottom_left_layout:add(space)
-        bottom_left_layout:add(space)
-        bottom_left_layout:add(memwidget)
-        bottom_left_layout:add(space)
-        bottom_left_layout:add(rbracket)
-        
-        -- Widgets that are aligned to the right
-        local bottom_right_layout = wibox.layout.fixed.horizontal()
-        bottom_right_layout:add(space)
-        bottom_right_layout:add(lbracket)
-        bottom_right_layout:add(space)
-        bottom_right_layout:add(mpdicon)
-        bottom_right_layout:add(space)
-        bottom_right_layout:add(mpdwidget)
-        bottom_right_layout:add(space)
-        bottom_right_layout:add(rbracket)
-        bottom_right_layout:add(space)
-        bottom_right_layout:add(lbracket)
-        bottom_right_layout:add(netupicon)
-        bottom_right_layout:add(netupinfo)
-        bottom_right_layout:add(space)
-        bottom_right_layout:add(netdownicon)
-        bottom_right_layout:add(netdowninfo)
-        bottom_right_layout:add(space)
-        bottom_right_layout:add(rbracket)
-        bottom_right_layout:add(space)
-        bottom_right_layout:add(lbracket)
-        bottom_right_layout:add(space)
-        bottom_right_layout:add(mygmailimg)
-        bottom_right_layout:add(space)
-        bottom_right_layout:add(mygmail)
-        bottom_right_layout:add(space)
-        bottom_right_layout:add(rbracket)
-        bottom_right_layout:add(space)
-        bottom_right_layout:add(lbracket)
-        bottom_right_layout:add(space)
-        bottom_right_layout:add(pacicon)
-        bottom_right_layout:add(space)
-        bottom_right_layout:add(pacwidget)
-        bottom_right_layout:add(space)
-        bottom_right_layout:add(rbracket)
-        bottom_right_layout:add(space)
-        bottom_right_layout:add(lbracket)
-        bottom_right_layout:add(space)
-        bottom_right_layout:add(uptimeicon)
-        bottom_right_layout:add(space)
-        bottom_right_layout:add(uptimewidget)
-        bottom_right_layout:add(space)
-        bottom_right_layout:add(rbracket)
-
-        -- Now bring it all together (with the tasklist in the middle)
-        local bottom_layout = wibox.layout.align.horizontal()
-        bottom_layout:set_left(bottom_left_layout)
-        --bottom_layout:set_middle(mytasklist[s])
-        bottom_layout:set_right(bottom_right_layout)
-
-        mybottomwibox[s]:set_widget(bottom_layout)
-    end
 end
 -- }}}
 
