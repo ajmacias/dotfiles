@@ -605,9 +605,21 @@ root.buttons(awful.util.table.join(
 
 -- {{{ Key bindings
 globalkeys = awful.util.table.join(
-    awful.key({ modkey,           }, "a", function () awful.util.spawn("slimlock " ) end),
-	awful.key({ modkey,           }, "+", function () awful.util.spawn("amixer -q sset Master 5%+ " ) end),
-	awful.key({ modkey,           }, "-", function () awful.util.spawn("amixer -q sset Master 5%- " ) end),
+    -- Change to specific screen
+    awful.key({ modkey,           }, "F1",     function() awful.screen.focus(1) end),
+    awful.key({ modkey,           }, "F2",     function() awful.screen.focus(2) end),
+
+    -- LockScreen
+    awful.key({ modkey,           }, "F12",    function() awful.util.spawn("xscreensaver-command -lock") end),
+
+    -- Multimedia Keys
+    awful.key({}, "XF86AudioRaiseVolume", function () awful.util.spawn("amixer set Master 2+") end),
+    awful.key({}, "XF86AudioLowerVolume", function () awful.util.spawn("amixer set Master 2-") end),
+    awful.key({}, "XF86AudioMute", function () awful.util.spawn("amixer set Master toggle") end),
+    awful.key({}, "XF86HomePage", function () awful.util.spawn("chromium") end),
+    awful.key({}, "XF86Tools", function () awful.util.spawn("thunar") end),
+
+
     awful.key({ modkey,           }, "Left",   awful.tag.viewprev       ),
     awful.key({ modkey,           }, "Right",  awful.tag.viewnext       ),
     awful.key({ modkey,           }, "Escape", awful.tag.history.restore),
