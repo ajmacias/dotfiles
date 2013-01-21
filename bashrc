@@ -46,11 +46,11 @@ case $_myos in
                 alias ping="ping -t"
                 ;;
     *)
+                PS1='\[\033[00;33m\][\W]\[\033[0;31m\]:\[\033[0m\] '
                 ;;
 esac
 
-# prompt
-#PS1='[\u@\h \W]\$ '
+# git prompt
 if [ -f ~/.git-prompt.sh ]
 then
     source ~/.git-prompt.sh
@@ -60,7 +60,6 @@ then
     GIT_PS1_SHOWUNTRACKEDFILES=1
     GIT_PS1_SHOWUPSTREAM="auto"
     PS1='\[\033[00;33m\][\W]\[\033[0;31m\]:\[\033[0m\]\[\033[00;32m\]$(__git_ps1)\[\033[0m\] '
-    #PS1='[\u@\h \W$(__git_ps1 " (%s)")]\$ '
 fi
 
 ### FUNCIONES
