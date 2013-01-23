@@ -46,7 +46,7 @@ case $_myos in
                 alias ping="ping -t"
                 ;;
     *)
-                PS1="$(if [[ ${EUID} == 0 ]]; then echo '\[\033[01;31m\]\u@\h \[\033[0m\]'; fi) \[\033[00;33m\][\W]\[\033[0;31m\]:\[\033[0m\] "
+                PS1="$(if [[ ${EUID} == 0 ]]; then echo '\[\033[01;31m\]\u@\h \[\033[0m\]'; fi)\[\033[00;33m\][\W]\[\033[0;31m\]:\[\033[0m\] "
                 ;;
 esac
 
@@ -59,7 +59,7 @@ then
     GIT_PS1_SHOWSTASHSTATE=1
     GIT_PS1_SHOWUNTRACKEDFILES=1
     GIT_PS1_SHOWUPSTREAM="auto"
-    PS1="$(if [[ ${EUID} == 0 ]]; then echo '\[\033[01;31m\]\u@\h \[\033[0m\]'; fi) \[\033[00;33m\][\W]\[\033[0;31m\]:\[\033[0m\]\[\033[00;32m\]$(__git_ps1)\[\033[0m\] "
+    PS1="$(if [[ ${EUID} == 0 ]]; then echo '\[\033[01;31m\]\u@\h \[\033[0m\]'; fi)\[\033[00;33m\][\W]\[\033[0;31m\]:\[\033[0m\]\[\033[00;32m\]$(__git_ps1)\[\033[0m\] "
 fi
 
 ### FUNCIONES
