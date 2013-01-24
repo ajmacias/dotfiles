@@ -50,6 +50,17 @@ case $_myos in
                 ;;
 esac
 
+# prompt colors
+root_color1="\[\033[00;31m\]"
+root_color2="\[\033[01;31m\]"
+
+user_color1="\[\033[00;32m\]"
+user_color2="\[\033[01;32m\]"
+
+if [[ ${EUID} == 0 ]]; then uc1=${root_color1}; uc2=${root_color2}; else uc1=${user_color1}; uc2=${user_color2}; fi
+
+BASIC_PS1="${uc1}\u${uc2}@${uc1}\h \[\033[00;33m\][\W]\[\033[0;31m\]:\[\033[0m\]"
+
 # git prompt
 if [ -f ~/.git-prompt.sh ]
 then
@@ -59,8 +70,10 @@ then
     GIT_PS1_SHOWSTASHSTATE=1
     GIT_PS1_SHOWUNTRACKEDFILES=1
     GIT_PS1_SHOWUPSTREAM="auto"
-    PS1="$(if [[ ${EUID} == 0 ]]; then echo '\[\033[01;31m\]\u@\h \[\033[0m\]'; fi)\[\033[00;33m\][\W]\[\033[0;31m\]:\[\033[0m\]\[\033[00;32m\]$(__git_ps1)\[\033[0m\] "
+    GIT_PS1="\[\033[00;32m\]\$(__git_ps1)\[\033[0m\]"
 fi
+
+PS1="${BASIC_PS1}${GIT_PS1} "
 
 ### FUNCIONES
 
