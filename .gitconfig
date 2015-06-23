@@ -1,0 +1,26 @@
+[user]
+  name = ajmacias
+  email = ajmacias@gmail.com
+
+[color]
+  ui = auto
+  diff = auto
+  status = auto
+  branch = auto
+  interactive = auto
+  grep = auto
+
+[alias]
+  st = status
+  ci = commit
+  ca = commit
+  show-version = !sh -c 'git rev-list HEAD | wc -l'
+  show-rev-number = !sh -c 'git rev-list --reverse HEAD | nl | awk \"{ if(\\$1 == "$0") { print \\$2 }}\"'
+
+  ctags = "!sh -c '[ -f .git/hooks/ctags ] || git init; .git/hooks/ctags' git-ctags"
+  one = show -s --pretty='format:%h (%s)'
+  rlog = !sh -c 'git log --color \"$@\"|fmt -s -w 79|less -FRSX' _
+
+
+[core]
+  excludesfile = ~/.gitignore_global
