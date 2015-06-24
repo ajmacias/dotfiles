@@ -21,6 +21,9 @@
   one = show -s --pretty='format:%h (%s)'
   rlog = !sh -c 'git log --color \"$@\"|fmt -s -w 79|less -FRSX' _
 
-
 [core]
   excludesfile = ~/.gitignore_global
+
+[init]
+  templatedir = ~/.git_template
+
