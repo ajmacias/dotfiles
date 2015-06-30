@@ -10,7 +10,7 @@ dir=~/dotfiles                    # dotfiles directory
 olddir=~/dotfiles_old             # old dotfiles backup directory
 
 # list of files/folders to symlink in homedir
-files=$(ls -a1 | grep -v '^[\.]*$' | grep -v makesymlinks.sh | grep -v '\.git$')
+files=$(ls -a1 | grep -v '^[\.]*$' | grep -v README\.md | grep -v makesymlinks.sh | grep -v '\.git$')
 
 ##########
 
