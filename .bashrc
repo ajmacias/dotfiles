@@ -40,6 +40,8 @@ alias ncdu="ncdu -r"
 
 alias dude="rdesktop -u administrator -g 1280x1008 192.168.1.9 &"
 
+[[ -f ~/.bashrc.local ]] && . ~/.bashrc.local
+
 _myos="$(uname -o)"
 
 case $_myos in
