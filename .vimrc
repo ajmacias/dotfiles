@@ -67,6 +67,7 @@ syntax on                               " resaltado de sintaxis
 set modelines=0                         " ignoramos linea de config para vim en ficheros
 set number                              " mostramos los numeros de linea
 set ruler                               " mostramos la regla
+set nowrap                              " no cortes mis lineas!
 
 set tabstop=2                           " las columnas que tiene un TAB
 set shiftwidth=2                        " las columnas que movemos al indentar << y >>
