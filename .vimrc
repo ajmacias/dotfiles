@@ -99,6 +99,8 @@ set nowritebackup                       " ... ni mientras lo escribimos
 set nofoldenable
 set foldmethod=indent
 
+set tags+=./.git/tags
+
 set showmode
 "set visualbell
 set ttyfast
@@ -141,6 +143,7 @@ let mapleader = ","
 map <F1> <Esc>
 nmap <F2> za
 nmap <F3> :TagbarToggle<cr>
+nmap <F4> :call UpdateTags()<cr>
 set pastetoggle=<F6>
 nmap <F11> :GundoToggle<cr>
 nmap <F12> :NERDTreeToggle<cr>
@@ -229,7 +232,13 @@ autocmd BufEnter * call CheckLeftBuffers()
 
 
 
-
+" genera tags
+function! UpdateTags()
+  "  execute ":silent !ctags -f ./.git/tags ."
+  execute ":silent !ctags --langmap=php:+.php --php-kinds=cdfi -f ./.git/tags ."
+  execute ":redraw!"
+  echohl StatusLine | echo "Tags file updated" | echohl None
+endfunction
 
 
 
